@@ -28,8 +28,8 @@ public class CategoryService {
 
     public List<Participant> filterByRatio(List<Participant> participants, int startRatio, int endRatio) {
         return participants.stream().
-                filter(p -> p.getRatio() > startRatio
-                        && p.getRatio() <= endRatio)
+                filter(p -> p.getRatio() >= startRatio
+                        && p.getRatio() < endRatio)
                 .collect(Collectors.toList());
     }
 

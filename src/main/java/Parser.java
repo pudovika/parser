@@ -58,7 +58,7 @@ public class Parser {
 
     /**
      * Maps poi XWPFTableRow to Participant entity
-     * @param participantTableRow
+     * @param participantTableRow table row with raw data from file
      * @return Participant
      */
     private static Participant mapToParticipant(XWPFTableRow participantTableRow) {
@@ -69,8 +69,8 @@ public class Parser {
             participant.setName(participantTableRow.getCell(2).getText());
 
             try {
-                participant.setWeight(Double.valueOf(participantTableRow.getCell(6).getText()).intValue());
-                participant.setHeight(Double.valueOf(participantTableRow.getCell(7).getText()).intValue());
+                participant.setWeight(Double.valueOf(participantTableRow.getCell(6).getText()));
+                participant.setHeight(Integer.valueOf(participantTableRow.getCell(7).getText()));
                 participant.setRatio(participant.getHeight() + participant.getWeight());
             } catch (NumberFormatException nfe) {
                 simpleLogger.logException(nfe);

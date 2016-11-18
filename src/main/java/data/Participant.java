@@ -10,9 +10,9 @@ public class Participant {
 
     private Integer height;
 
-    private Integer weight;
+    private Double weight;
 
-    private Integer ratio;
+    private Double ratio;
 
     private String gender;
 
@@ -44,19 +44,19 @@ public class Participant {
         this.height = height;
     }
 
-    public Integer getWeight() {
+    public Double getWeight() {
         return weight;
     }
 
-    public void setWeight(Integer weight) {
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 
-    public Integer getRatio() {
+    public Double getRatio() {
         return ratio;
     }
 
-    public void setRatio(Integer ratio) {
+    public void setRatio(Double ratio) {
         this.ratio = ratio;
     }
 

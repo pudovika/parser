@@ -33,7 +33,14 @@ public class FileWriter {
             AgeCategory ageCategory = participantsGroup.getAgeCategory();
             runWriter.setText("Age category: " + ageCategory);
             addParticipantTables(doc, participantsGroup.getCategoryMap(), ageCategory.getRatioOffset());
-            File file = new File(path + ageCategory + ".docx");
+            String fileName = path +
+                    ageCategory +
+                    "_" +
+                    ageCategory.getStartAge() +
+                    "_" +
+                    ageCategory.getEndAge() +
+                    ".docx";
+            File file = new File(fileName);
             System.out.println("Wrote to file: " + file.getAbsolutePath());
             try (OutputStream out = new FileOutputStream(file)) {
                 doc.write(out);
