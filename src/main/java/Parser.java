@@ -69,7 +69,7 @@ public class Parser {
             participant.setName(participantTableRow.getCell(2).getText());
 
             try {
-                participant.setWeight(Double.valueOf(participantTableRow.getCell(6).getText()));
+                participant.setWeight(Double.valueOf(participantTableRow.getCell(6).getText().replace(",",".")));
                 participant.setHeight(Integer.valueOf(participantTableRow.getCell(7).getText()));
                 participant.setRatio(participant.getHeight() + participant.getWeight());
             } catch (NumberFormatException nfe) {
