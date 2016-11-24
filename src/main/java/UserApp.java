@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -21,9 +22,9 @@ import java.util.List;
 
 public class UserApp extends Application {
 
-    File outputFolder;
+    private File outputFolder;
 
-    List<Participant> participants;
+    private List<Participant> participants;
 
     // App has 2 flow depending on args ui and command line
 
@@ -153,7 +154,7 @@ public class UserApp extends Application {
                 filterByRangeAndShow(categoryFourth, categoryFourthTextArea, adults);
                 filterByRangeAndShow(categoryFifth, categoryFifthTextArea, adults);
                 adults.stream()
-                        .filter(participant -> participant.getRatio() > categoryFifth.getHighValue())
+                        .filter(participant -> participant.getRatio() >= categoryFifth.getHighValue())
                         .forEach(participant -> categorySixthTextArea.appendText(participant.toPrettyEnString() + "\n"));
             }
         });
@@ -162,7 +163,7 @@ public class UserApp extends Application {
 
     private void filterByRangeAndShow(RangeSlider categoryFirst, TextArea categoryFirstTextArea, List<Participant> participants) {
         participants.stream()
-                .filter(participant -> participant.getRatio() > categoryFirst.getLowValue() && participant.getRatio() <= categoryFirst.getHighValue())
+                .filter(participant -> participant.getRatio() >= categoryFirst.getLowValue() && participant.getRatio() < categoryFirst.getHighValue())
                 .forEach(participant -> categoryFirstTextArea.appendText(participant.toPrettyEnString() + "\n"));
     }
 

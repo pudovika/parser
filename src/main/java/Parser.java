@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import data.Participant;
@@ -32,6 +33,7 @@ public class Parser {
 
     public static List<Participant> parseDocxFile(File file) {
         List<Participant> participants = new ArrayList<>();
+        final String city = file.getName().split("_")[0];
         try {
             FileInputStream fis = new FileInputStream(file.getAbsolutePath());
             XWPFDocument document = new XWPFDocument(fis);
@@ -53,7 +55,14 @@ public class Parser {
                 .filter(participant -> !participant.getName().isEmpty())
                 .filter(participant -> participant.getHeight() != null)
                 .filter(participant -> participant.getWeight() != null)
+                .map(setParticipantCityFunction(city))
                 .collect(Collectors.toList());
+    }
+
+    private static Function<Participant, Participant> setParticipantCityFunction(String city) {
+        return participant -> {
+            participant.setCity(city);
+            return participant;};
     }
 
     /**

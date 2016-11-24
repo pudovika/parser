@@ -20,9 +20,10 @@ public class FileWriter {
 
     /**
      * Writes participants to files
-     * @param path Folder path
+     *
+     * @param path              Folder path
      * @param participantsGroup Group of participants
-     * @throws IOException
+     * @throws IOException Error during writing to disk
      */
     public void writeToFile(String path, ParticipantsGroup participantsGroup) throws IOException {
 
@@ -55,10 +56,10 @@ public class FileWriter {
             XWPFParagraph paragraph = doc.createParagraph();
             XWPFRun runWriter = paragraph.createRun();
             runWriter.setText("Category: " + entry.getKey() +
-                    " Ratio: " + (entry.getKey().getStartRatio()- ratioOffset)
-                    + " - " + (entry.getKey().getEndRatio()- ratioOffset));
+                    " Ratio: " + (entry.getKey().getStartRatio() - ratioOffset)
+                    + " - " + (entry.getKey().getEndRatio() - ratioOffset));
 
-            XWPFTable table = doc.createTable(1, 7);
+            XWPFTable table = doc.createTable(1, 9);
             XWPFTableRow header = table.getRow(0);
             header.getCell(0).setText("Last Name");
             header.getCell(1).setText("First Name");
@@ -67,6 +68,8 @@ public class FileWriter {
             header.getCell(4).setText("Ratio");
             header.getCell(5).setText("BirthDate");
             header.getCell(6).setText("Age");
+            header.getCell(7).setText("City");
+            header.getCell(8).setText("Full name with City");
             entry.getValue().forEach(participant -> {
                 XWPFTableRow row = table.createRow();
                 row.getCell(0).setText(participant.getLastName());
@@ -76,6 +79,10 @@ public class FileWriter {
                 row.getCell(4).setText(String.valueOf(participant.getRatio()));
                 row.getCell(5).setText(participant.getBirthDate().toString());
                 row.getCell(6).setText(String.valueOf(participant.getAge()));
+                row.getCell(7).setText(String.valueOf(participant.getCity()));
+                row.getCell(8).setText(participant.getLastName()
+                        + " " + participant.getName()
+                        + " " + participant.getCity());
 
             });
         }

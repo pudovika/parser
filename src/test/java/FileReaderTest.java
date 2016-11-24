@@ -15,7 +15,7 @@ public class FileReaderTest {
     public void setUp() throws Exception {
         fileReader = new FileReader();
         ClassLoader classLoader = getClass().getClassLoader();
-        folderPath = new File(classLoader.getResource("participants.docx").getFile()).getParent();
+        folderPath = new File(classLoader.getResource("Kharkiv_participants.docx").getFile()).getParent();
     }
 
     @Test

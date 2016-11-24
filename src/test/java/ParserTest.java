@@ -20,7 +20,7 @@ public class ParserTest {
         fileReader = new FileReader();
         parser = new Parser();
         ClassLoader classLoader = getClass().getClassLoader();
-        resourcesFolderPath = new File(classLoader.getResource("participants.docx").getFile()).getParent();
+        resourcesFolderPath = new File(classLoader.getResource("Kharkiv_participants.docx").getFile()).getParent();
     }
 
     @Test

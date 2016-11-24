@@ -16,7 +16,7 @@ import static junit.framework.TestCase.assertEquals;
 
 public class FileWriterTest {
 
-    public static final String PARTICIPANTS_DOCX = "participants.docx";
+    private static final String PARTICIPANTS_DOCX = "Kharkiv_participants.docx";
     private String folderPath;
     private FileReader fileReader;
     private FileWriter fileWriter;
