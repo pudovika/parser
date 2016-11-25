@@ -59,7 +59,7 @@ public class FileWriter {
                     " Ratio: " + (entry.getKey().getStartRatio() - ratioOffset)
                     + " - " + (entry.getKey().getEndRatio() - ratioOffset));
 
-            XWPFTable table = doc.createTable(1, 9);
+            XWPFTable table = doc.createTable(1, 10);
             XWPFTableRow header = table.getRow(0);
             header.getCell(0).setText("Last Name");
             header.getCell(1).setText("First Name");
@@ -69,7 +69,8 @@ public class FileWriter {
             header.getCell(5).setText("BirthDate");
             header.getCell(6).setText("Age");
             header.getCell(7).setText("City");
-            header.getCell(8).setText("Full name with City");
+            header.getCell(8).setText("Gender");
+            header.getCell(9).setText("Full name with City");
             entry.getValue().forEach(participant -> {
                 XWPFTableRow row = table.createRow();
                 row.getCell(0).setText(participant.getLastName());
@@ -80,7 +81,8 @@ public class FileWriter {
                 row.getCell(5).setText(participant.getBirthDate().toString());
                 row.getCell(6).setText(String.valueOf(participant.getAge()));
                 row.getCell(7).setText(String.valueOf(participant.getCity()));
-                row.getCell(8).setText(participant.getLastName()
+                row.getCell(8).setText(participant.getGender());
+                row.getCell(9).setText(participant.getLastName()
                         + " " + participant.getName()
                         + " " + participant.getCity());
 

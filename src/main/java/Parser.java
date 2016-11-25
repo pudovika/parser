@@ -26,14 +26,14 @@ public class Parser {
      */
     public List<Participant> parseDocxFiles(List<File> files) {
         return files.stream()
-                .map(Parser::parseDocxFile)
+                .map(this::parseDocxFile)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
-    public static List<Participant> parseDocxFile(File file) {
+    public List<Participant> parseDocxFile(File file) {
         List<Participant> participants = new ArrayList<>();
-        final String city = file.getName().split("_")[0];
+        String city = file.getName().split("_")[0];
         try {
             FileInputStream fis = new FileInputStream(file.getAbsolutePath());
             XWPFDocument document = new XWPFDocument(fis);
@@ -42,7 +42,7 @@ public class Parser {
                 participants = tables.get(0).getRows()
                         .stream()
                         .skip(1)
-                        .map(Parser::mapToParticipant)
+                        .map(this::mapToParticipant)
                         .collect(Collectors.toList());
             }
 
@@ -59,7 +59,7 @@ public class Parser {
                 .collect(Collectors.toList());
     }
 
-    private static Function<Participant, Participant> setParticipantCityFunction(String city) {
+    private Function<Participant, Participant> setParticipantCityFunction(String city) {
         return participant -> {
             participant.setCity(city);
             return participant;};
@@ -70,7 +70,7 @@ public class Parser {
      * @param participantTableRow table row with raw data from file
      * @return Participant
      */
-    private static Participant mapToParticipant(XWPFTableRow participantTableRow) {
+    private Participant mapToParticipant(XWPFTableRow participantTableRow) {
         Participant participant = new Participant();
         if (participantTableRow.getTableICells().size() > 1) {
 
@@ -85,20 +85,34 @@ public class Parser {
                 simpleLogger.logException(nfe);
             }
             String birthDate = participantTableRow.getCell(3).getText();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.mm.yyyy");
-
-            try {
-                LocalDate date = sdf.parse(birthDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                participant.setBirthDate(date);
-                LocalDate now = LocalDate.now();
-                participant.setAge(date.until(now).getYears());
-            } catch (ParseException e) {
-                simpleLogger.logException(e);
-            }
+            participant.setBirthDate(parseDate(birthDate));
+            participant.setAge(participant.getBirthDate().until(LocalDate.now()).getYears());
             participant.setGender(participantTableRow.getCell(10).getText());
             printParticipant(participant);
         }
         return participant;
+    }
+
+    private LocalDate parseDate(String birthDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.mm.yyyy");
+        try {
+            return getLocalDate(birthDate, sdf);
+        } catch (ParseException e) {
+            simpleLogger.logException(e);
+        }
+        try {
+            sdf = new SimpleDateFormat("yyyy");
+            return getLocalDate(birthDate, sdf);
+        } catch (ParseException e) {
+            simpleLogger.logException(e);
+        }
+        //set default date
+        return LocalDate.of(1970, 1,1);
+    }
+
+    private LocalDate getLocalDate(String birthDate, SimpleDateFormat sdf) throws ParseException {
+        LocalDate date = sdf.parse(birthDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return  date;
     }
 
     private static void printParticipant(Participant participant) {
