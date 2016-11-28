@@ -8,7 +8,7 @@ public class Participant {
 
     private String lastName;
 
-    private Integer height;
+    private Double height;
 
     private Double weight;
 
@@ -38,11 +38,11 @@ public class Participant {
         this.lastName = lastName;
     }
 
-    public Integer getHeight() {
+    public Double getHeight() {
         return height;
     }
 
-    public void setHeight(Integer height) {
+    public void setHeight(Double height) {
         this.height = height;
     }
 
