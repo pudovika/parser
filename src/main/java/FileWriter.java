@@ -18,6 +18,9 @@ import data.ParticipantsGroup;
 
 public class FileWriter {
 
+
+    private StatisticService statisticService = StatisticService.getStatisticService();
+
     /**
      * Writes participants to files
      *
@@ -71,7 +74,10 @@ public class FileWriter {
             header.getCell(7).setText("City");
             header.getCell(8).setText("Gender");
             header.getCell(9).setText("Full name with City");
-            entry.getValue().forEach(participant -> {
+
+            List<Participant> participantList = entry.getValue();
+            statisticService.addOutputTotalWroteCount(participantList.size());
+            participantList.forEach(participant -> {
                 XWPFTableRow row = table.createRow();
                 row.getCell(0).setText(participant.getLastName());
                 row.getCell(1).setText(participant.getName());

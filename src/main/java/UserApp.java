@@ -26,6 +26,8 @@ public class UserApp extends Application {
 
     private List<Participant> participants;
 
+    private StatisticService statisticService = StatisticService.getStatisticService();
+
     // App has 2 flow depending on args ui and command line
 
     public static void main(String[] args) {
@@ -126,8 +128,17 @@ public class UserApp extends Application {
 
         FileWriter fileWriter = new FileWriter();
 
+        Label totalReadCount = new Label("No info");
+        GridPane.setConstraints(totalReadCount, 3, 0);
+        inputGridPane.getChildren().add(totalReadCount);
+
+        Label totalWroteCount = new Label("No info");
+        GridPane.setConstraints(totalWroteCount, 3, 1);
+        inputGridPane.getChildren().add(totalWroteCount);
+
         selectDirectoryButton.setOnAction(event -> {
             outputFolder = chooser.showDialog(stage);
+            statisticService.clearOutputTotalWroteCount();
             List<ParticipantsGroup> participantsGroups = categoryService.processParticipants(participants);
             participantsGroups.forEach(participantsGroup -> {
                 try {
@@ -136,6 +147,7 @@ public class UserApp extends Application {
                     e.printStackTrace();
                 }
             });
+            totalWroteCount.setText(Integer.toString(statisticService.getOutputTotalWroteCount()));
 
         });
 
@@ -143,10 +155,14 @@ public class UserApp extends Application {
             List<File> list =
                     fileChooser.showOpenMultipleDialog(stage);
             if (list != null) {
+                statisticService.clearInputTotalReadCount();
                 participants = parser.parseDocxFiles(list);
                 if (selectDirectoryButton.isDisabled()) {
                     selectDirectoryButton.setDisable(false);
                 }
+
+                totalReadCount.setText(Integer.toString(statisticService.getInputTotalReadCount()));
+
                 List<Participant> adults = categoryService.filterByAge(participants, AgeCategory.ADULTS);
                 filterByRangeAndShow(categoryFirst, categoryFirstTextArea, adults);
                 filterByRangeAndShow(categorySecond, categorySecondTextArea, adults);
@@ -171,20 +187,27 @@ public class UserApp extends Application {
 
         Label introLabel = new Label("Set categories sliders and select files, after files selected process will start. Will be showed only adults category (age 18+)");
         Label folderDescriptionLabel = new Label("Select output folder to store categorized files. Button will be enabled after files choosing");
+
+        Label totalRead = new Label("Participants read count: ");
+        Label totalWrote = new Label("Participants wrote count: ");
         GridPane inputGridPane = new GridPane();
 
         GridPane.setConstraints(openMultipleButton, 0, 0);
         GridPane.setConstraints(introLabel, 1, 0);
+        GridPane.setConstraints(totalRead, 2, 0);
         selectDirectoryButton.setDisable(true);
         GridPane.setConstraints(selectDirectoryButton, 0, 1);
         GridPane.setConstraints(folderDescriptionLabel, 1, 1);
+        GridPane.setConstraints(totalWrote, 2, 1);
 
         inputGridPane.setHgap(6);
         inputGridPane.setVgap(6);
         inputGridPane.getChildren().add(openMultipleButton);
         inputGridPane.getChildren().add(introLabel);
+        inputGridPane.getChildren().add(totalRead);
         inputGridPane.getChildren().add(selectDirectoryButton);
         inputGridPane.getChildren().add(folderDescriptionLabel);
+        inputGridPane.getChildren().add(totalWrote);
         return inputGridPane;
     }
 

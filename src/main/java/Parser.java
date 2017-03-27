@@ -17,7 +17,9 @@ import data.Participant;
 
 public class Parser {
 
-    private static SimpleLogger simpleLogger = SimpleLogger.getSimpleLogger();
+    private SimpleLogger simpleLogger = SimpleLogger.getSimpleLogger();
+
+    private StatisticService statisticService = StatisticService.getStatisticService();
 
     /**
      * Parses participant .docx files to entity
@@ -50,13 +52,15 @@ public class Parser {
         } catch (Exception e) {
             simpleLogger.logException(e);
         }
-        return participants.stream()
+        List<Participant> participantFilteredList = participants.stream()
                 .filter(participant -> !participant.getLastName().isEmpty())
                 .filter(participant -> !participant.getName().isEmpty())
                 .filter(participant -> participant.getHeight() != null)
                 .filter(participant -> participant.getWeight() != null)
                 .map(setParticipantCityFunction(city))
                 .collect(Collectors.toList());
+        statisticService.addInputTotalReadCount(participantFilteredList.size());
+        return participantFilteredList;
     }
 
     private Function<Participant, Participant> setParticipantCityFunction(String city) {
@@ -115,7 +119,7 @@ public class Parser {
         return  date;
     }
 
-    private static void printParticipant(Participant participant) {
+    private void printParticipant(Participant participant) {
         System.out.println("Parsed First Name: " + participant.getName());
         System.out.println("Parsed Last Name: " + participant.getLastName());
         System.out.println("Parsed Height: " + participant.getHeight());
