@@ -17,6 +17,12 @@ import data.Participant;
 
 public class Parser {
 
+    private static final int LAST_NAME_INDEX = 1;
+    private static final int NAME_INDEX = 2;
+    private static final int BIRTHDATE_INDEX = 3;
+    private static final int WEIGHT_INDEX = 5;
+    private static final int HEIGHT_INDEX = 6;
+    private static final int GENDER_INDEX = 8;
     private SimpleLogger simpleLogger = SimpleLogger.getSimpleLogger();
 
     private StatisticService statisticService = StatisticService.getStatisticService();
@@ -52,15 +58,16 @@ public class Parser {
         } catch (Exception e) {
             simpleLogger.logException(e);
         }
-        List<Participant> participantFilteredList = participants.stream()
+
+        List<Participant> participantReadList = participants.stream()
                 .filter(participant -> !participant.getLastName().isEmpty())
                 .filter(participant -> !participant.getName().isEmpty())
-                .filter(participant -> participant.getHeight() != null)
+                .collect(Collectors.toList());
+        statisticService.addInputTotalReadCount(participantReadList.size());
+        return participantReadList.stream().filter(participant -> participant.getHeight() != null)
                 .filter(participant -> participant.getWeight() != null)
                 .map(setParticipantCityFunction(city))
                 .collect(Collectors.toList());
-        statisticService.addInputTotalReadCount(participantFilteredList.size());
-        return participantFilteredList;
     }
 
     private Function<Participant, Participant> setParticipantCityFunction(String city) {
@@ -78,20 +85,20 @@ public class Parser {
         Participant participant = new Participant();
         if (participantTableRow.getTableICells().size() > 1) {
 
-            participant.setLastName(participantTableRow.getCell(1).getText());
-            participant.setName(participantTableRow.getCell(2).getText());
+            participant.setLastName(participantTableRow.getCell(LAST_NAME_INDEX).getText());
+            participant.setName(participantTableRow.getCell(NAME_INDEX).getText());
 
             try {
-                participant.setWeight(Double.valueOf(participantTableRow.getCell(6).getText().replace(",",".")));
-                participant.setHeight(Double.valueOf(participantTableRow.getCell(7).getText().replace(",",".")));
+                participant.setWeight(Double.valueOf(participantTableRow.getCell(WEIGHT_INDEX).getText().replace(",",".")));
+                participant.setHeight(Double.valueOf(participantTableRow.getCell(HEIGHT_INDEX).getText().replace(",",".")));
                 participant.setRatio(participant.getHeight() + participant.getWeight());
             } catch (NumberFormatException nfe) {
                 simpleLogger.logException(nfe);
             }
-            String birthDate = participantTableRow.getCell(3).getText();
+            String birthDate = participantTableRow.getCell(BIRTHDATE_INDEX).getText();
             participant.setBirthDate(parseDate(birthDate));
             participant.setAge(participant.getBirthDate().until(LocalDate.now()).getYears());
-            participant.setGender(participantTableRow.getCell(10).getText());
+            participant.setGender(participantTableRow.getCell(GENDER_INDEX).getText());
             printParticipant(participant);
         }
         return participant;

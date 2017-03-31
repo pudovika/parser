@@ -36,7 +36,7 @@ public class ParserTest {
         Participant participant = participants.get(0);
         assertEquals("John", participant.getName());
         assertEquals("Down", participant.getLastName());
-        assertEquals(new Integer(181), participant.getHeight());
+        assertEquals(181.0, participant.getHeight());
         assertEquals(83.3, participant.getWeight());
 
     }

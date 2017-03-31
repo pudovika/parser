@@ -1,12 +1,13 @@
 package data;
 
 public enum AgeCategory {
-    CHILDREN(6,7,90),
-    CHILDREN_OLDER(8,9,80),
-    CADETS(10,11,70),
-    CADETS_OLDER(12,13,50),
-    JUNIOR(14,15,40),
-    JUNIOR_OLDER(16,17,20),
+    CHILDREN(6,6,90),
+    CHILDREN_OLDER(7,8,80),
+    CADETS(9,10,60),
+    CADETS_OLDER(11,12,40),
+    JUNIOR(13,14,30),
+    JUNIOR_OLDER(15,16,20),
+    JUNIOR_ADULTS(17,17,20),
     ADULTS(18,60,0);
 
     private int startAge;

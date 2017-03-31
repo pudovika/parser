@@ -1,5 +1,5 @@
 group 'org.kudo'
-version '1.17'
+version '1.2'
 
 apply plugin: 'java'
 
