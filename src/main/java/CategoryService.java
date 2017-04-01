@@ -15,16 +15,17 @@ public class CategoryService {
      * Filters participants by age
      * @param participants List of participants for filter
      * @param ageCategory Age category
+     * @param gender
      * @return List of participants in this category
      */
 
-    public List<Participant> filterByAge(List<Participant> participants, AgeCategory ageCategory) {
-        return participants.stream().
-                filter(p -> p.getAge() >= ageCategory.getStartAge()
+    public List<Participant> filterByAgeAndGender(List<Participant> participants, AgeCategory ageCategory, String gender) {
+        return participants.stream()
+                .filter(p -> p.getAge() >= ageCategory.getStartAge()
                         && p.getAge() <= ageCategory.getEndAge())
+                .filter(p -> p.getGender().equalsIgnoreCase(gender))
                 .collect(Collectors.toList());
     }
-
 
     public List<Participant> filterByRatio(List<Participant> participants, int startRatio, int endRatio) {
         return participants.stream().
@@ -41,21 +42,34 @@ public class CategoryService {
     public List<ParticipantsGroup> processParticipants(List<Participant> participants){
         List<ParticipantsGroup> participantsGroups = new ArrayList<>();
         for (AgeCategory ageCategory : AgeCategory.values()) {
-
-            List<Participant> filteredParticipants = filterByAge(participants, ageCategory);
-            Map<Category,List<Participant>> categoryMap = new HashMap<>();
-
-            for(Category category : Category.values()) {
-                categoryMap.put(category,
-                        filterByRatio(filteredParticipants,
-                                category.getStartRatio() - ageCategory.getRatioOffset(),
-                                category.getEndRatio() - ageCategory.getRatioOffset()));
-            }
-
-            participantsGroups.add(new ParticipantsGroup(ageCategory,categoryMap));
-
+            addNonEmptyParticipants(participantsGroups, generateParticipantGroup(ageCategory, participants, ParticipantsGroup.GENDER_F));
+            addNonEmptyParticipants(participantsGroups, generateParticipantGroup(ageCategory, participants, ParticipantsGroup.GENDER_M));
         }
         return  participantsGroups;
+    }
+
+    private void addNonEmptyParticipants(List<ParticipantsGroup> participantsGroups, ParticipantsGroup participantsGroup) {
+        if (!participantsGroup.getCategoryMap().isEmpty()) {
+            participantsGroups.add(participantsGroup);
+        }
+    }
+
+    private ParticipantsGroup generateParticipantGroup(AgeCategory ageCategory, List<Participant> participants, String gender) {
+        List<Participant> filteredParticipants = filterByAgeAndGender(participants, ageCategory, gender);
+        Map<Category,List<Participant>> categoryMap = new HashMap<>();
+
+        for(Category category : Category.values()) {
+            List<Participant> filteredByRatio = filterByRatio(filteredParticipants,
+                    category.getStartRatio() - ageCategory.getRatioOffset(),
+                    category.getEndRatio() - ageCategory.getRatioOffset());
+            if (filteredByRatio.size() > 0) {
+                categoryMap.put(category,
+                        filteredByRatio);
+            }
+
+        }
+
+        return new ParticipantsGroup(ageCategory,categoryMap, gender);
     }
 
 

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import data.AgeCategory;
 import data.Category;
@@ -43,6 +44,8 @@ public class FileWriter {
                     ageCategory.getStartAge() +
                     "_" +
                     ageCategory.getEndAge() +
+                    "_" +
+                    participantsGroup.getGender() +
                     ".docx";
             File file = new File(fileName);
             System.out.println("Wrote to file: " + file.getAbsolutePath());

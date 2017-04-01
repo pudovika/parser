@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -163,7 +162,7 @@ public class UserApp extends Application {
 
                 totalReadCount.setText(Integer.toString(statisticService.getInputTotalReadCount()));
 
-                List<Participant> adults = categoryService.filterByAge(participants, AgeCategory.ADULTS);
+                List<Participant> adults = categoryService.filterByAgeAndGender(participants, AgeCategory.ADULTS, ParticipantsGroup.GENDER_M);
                 filterByRangeAndShow(categoryFirst, categoryFirstTextArea, adults);
                 filterByRangeAndShow(categorySecond, categorySecondTextArea, adults);
                 filterByRangeAndShow(categoryThird, categoryThirdTextArea, adults);

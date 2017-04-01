@@ -3,17 +3,24 @@ package data;
 import java.util.List;
 import java.util.Map;
 
-import data.Participant;
-
 public class ParticipantsGroup {
+
+    //female gender in cyrillic
+    public static final String GENDER_F = "Ж";
+
+    //male gender in cyrillic
+    public static final String GENDER_M = "М";
 
     private final AgeCategory ageCategory;
 
     private final Map<Category,List<Participant>> categoryMap;
 
-    public ParticipantsGroup(AgeCategory ageCategory, Map<Category, List<Participant>> categoryMap) {
+    private final String gender;
+
+    public ParticipantsGroup(AgeCategory ageCategory, Map<Category, List<Participant>> categoryMap, String gender) {
         this.ageCategory = ageCategory;
         this.categoryMap = categoryMap;
+        this.gender = gender;
     }
 
     public AgeCategory getAgeCategory() {
@@ -22,5 +29,9 @@ public class ParticipantsGroup {
 
     public Map<Category, List<Participant>> getCategoryMap() {
         return categoryMap;
+    }
+
+    public String getGender() {
+        return gender;
     }
 }
