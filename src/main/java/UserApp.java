@@ -141,7 +141,9 @@ public class UserApp extends Application {
             List<ParticipantsGroup> participantsGroups = categoryService.processParticipants(participants);
             participantsGroups.forEach(participantsGroup -> {
                 try {
-                    fileWriter.writeToFile(outputFolder.getPath() + "\\", participantsGroup);
+                    String path = outputFolder.getPath() + "\\";
+                    fileWriter.writeToFile(path, participantsGroup);
+                    fileWriter.writeStatisticToFile(path);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

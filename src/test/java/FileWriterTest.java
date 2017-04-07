@@ -49,8 +49,9 @@ public class FileWriterTest {
                 e.printStackTrace();
             }
         });
+
         List<File> addedFiles = fileReader.readFilesFromFolder(folderPath);
-        assertEquals(addedFiles.size() - files.size(), AgeCategory.values().length);
+        assertEquals(addedFiles.size() - files.size(), participantsGroups.size());
     }
 
     @After

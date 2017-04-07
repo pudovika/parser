@@ -1,26 +1,29 @@
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.XWPFTable;
-import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import data.AgeCategory;
 import data.Category;
 import data.Participant;
 import data.ParticipantsGroup;
+import org.apache.poi.xwpf.usermodel.*;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
 
 public class FileWriter {
 
 
     private StatisticService statisticService = StatisticService.getStatisticService();
+
+    public void writeStatisticToFile(String path) throws IOException {
+        String fileName = path +
+                "statistic.txt";
+        Path pathFile = Paths.get(fileName);
+        try (BufferedWriter writer = Files.newBufferedWriter(pathFile)) {
+            writer.write(statisticService.generateStatisticReport());
+        }
+    }
 
     /**
      * Writes participants to files
@@ -81,6 +84,7 @@ public class FileWriter {
             List<Participant> participantList = entry.getValue();
             statisticService.addOutputTotalWroteCount(participantList.size());
             participantList.forEach(participant -> {
+                statisticService.addOutputCityCount(participant.getCity());
                 XWPFTableRow row = table.createRow();
                 row.getCell(0).setText(participant.getLastName());
                 row.getCell(1).setText(participant.getName());

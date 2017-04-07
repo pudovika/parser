@@ -64,15 +64,17 @@ public class Parser {
                 .filter(participant -> !participant.getName().isEmpty())
                 .collect(Collectors.toList());
         statisticService.addInputTotalReadCount(participantReadList.size());
-        return participantReadList.stream().filter(participant -> participant.getHeight() != null)
-                .filter(participant -> participant.getWeight() != null)
+        return participantReadList.stream()
                 .map(setParticipantCityFunction(city))
+                .filter(participant -> participant.getHeight() != null)
+                .filter(participant -> participant.getWeight() != null)
                 .collect(Collectors.toList());
     }
 
     private Function<Participant, Participant> setParticipantCityFunction(String city) {
         return participant -> {
             participant.setCity(city);
+            statisticService.addInputCityCount(city);
             return participant;};
     }
 
