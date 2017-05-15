@@ -5,12 +5,6 @@ import java.util.Map;
 
 public class ParticipantsGroup {
 
-    //female gender in cyrillic
-    public static final String GENDER_F = "Ж";
-
-    //male gender in cyrillic
-    public static final String GENDER_M = "М";
-
     private final AgeCategory ageCategory;
 
     private final Map<Category,List<Participant>> categoryMap;

@@ -16,12 +16,12 @@ public class CommandLineFlow {
 
     private FileWriter fileWriter;
 
-    public boolean init(){
+    public boolean init(String genderMale, String genderFemale){
         try {
             parser = new Parser();
             fileReader = new FileReader();
             simpleLogger = SimpleLogger.getSimpleLogger();
-            categoryService = new CategoryService("M", "F");
+            categoryService = new CategoryService(genderMale.isEmpty() ? "\u041C" : genderMale, genderFemale.isEmpty() ? "\u0416" : genderFemale);
             fileWriter = new FileWriter();
         } catch (Exception e) {
             return false;

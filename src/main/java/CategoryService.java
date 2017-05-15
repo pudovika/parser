@@ -51,8 +51,8 @@ public class CategoryService {
     public List<ParticipantsGroup> processParticipants(List<Participant> participants){
         List<ParticipantsGroup> participantsGroups = new ArrayList<>();
         for (AgeCategory ageCategory : AgeCategory.values()) {
-            addNonEmptyParticipants(participantsGroups, generateParticipantGroup(ageCategory, participants, ParticipantsGroup.GENDER_F));
-            addNonEmptyParticipants(participantsGroups, generateParticipantGroup(ageCategory, participants, ParticipantsGroup.GENDER_M));
+            addNonEmptyParticipants(participantsGroups, generateParticipantGroup(ageCategory, participants, genderFemale));
+            addNonEmptyParticipants(participantsGroups, generateParticipantGroup(ageCategory, participants, genderMale));
         }
         return  participantsGroups;
     }

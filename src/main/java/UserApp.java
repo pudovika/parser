@@ -31,12 +31,12 @@ public class UserApp extends Application {
     // App has 2 flow depending on args ui and command line
 
     public static void main(String[] args) {
-        if(args.length == 0){
+        if (args.length == 0) {
             Application.launch(args);
         } else {
             CommandLineFlow commandLineFlow = new CommandLineFlow();
-            boolean successfulInit = commandLineFlow.init();
-            if(!successfulInit) {
+            boolean successfulInit = args.length > 2 ? commandLineFlow.init(args[1], args[2]) : commandLineFlow.init("", "");
+            if (!successfulInit) {
                 System.out.print("Error during command line flow initialization");
                 System.exit(1);
             }
@@ -61,11 +61,10 @@ public class UserApp extends Application {
         chooser.setTitle("Select output directory");
 
         TextField fieldMale = new TextField();
-        fieldMale.setText("М");
-        TextField fieldFemale = new TextField();
-        fieldFemale.setText("Ж");
 
-        GridPane inputGridPane = createInputMenu(openMultipleButton, selectDirectoryButton,fieldMale,fieldFemale);
+        TextField fieldFemale = new TextField();
+
+        GridPane inputGridPane = createInputMenu(openMultipleButton, selectDirectoryButton, fieldMale, fieldFemale);
 
 
         Pane rootGroup = new VBox(12);
@@ -127,12 +126,6 @@ public class UserApp extends Application {
 
         stage.setScene(new Scene(rootGroup));
 
-        Parser parser = new Parser();
-
-        CategoryService categoryService = new CategoryService(fieldMale.getText(), fieldFemale.getText());
-
-        FileWriter fileWriter = new FileWriter();
-
         Label totalReadCount = new Label("No info");
         GridPane.setConstraints(totalReadCount, 3, 0);
         inputGridPane.getChildren().add(totalReadCount);
@@ -141,10 +134,37 @@ public class UserApp extends Application {
         GridPane.setConstraints(totalWroteCount, 3, 1);
         inputGridPane.getChildren().add(totalWroteCount);
 
+        openMultipleButton.setOnAction(e -> {
+            Parser parser = new Parser();
+            List<File> list =
+                    fileChooser.showOpenMultipleDialog(stage);
+            if (list != null) {
+                statisticService.clearInputTotalReadCount();
+                participants = parser.parseDocxFiles(list);
+                if (selectDirectoryButton.isDisabled()) {
+                    selectDirectoryButton.setDisable(false);
+                }
+
+                totalReadCount.setText(Integer.toString(statisticService.getInputTotalReadCount()));
+                CategoryService categoryService = new CategoryService(fieldMale.getText(), fieldFemale.getText());
+                List<Participant> adults = categoryService.filterByAgeAndGender(participants, AgeCategory.ADULTS, fieldMale.getText());
+                filterByRangeAndShow(categoryFirst, categoryFirstTextArea, adults);
+                filterByRangeAndShow(categorySecond, categorySecondTextArea, adults);
+                filterByRangeAndShow(categoryThird, categoryThirdTextArea, adults);
+                filterByRangeAndShow(categoryFourth, categoryFourthTextArea, adults);
+                filterByRangeAndShow(categoryFifth, categoryFifthTextArea, adults);
+                adults.stream()
+                        .filter(participant -> participant.getRatio() >= categoryFifth.getHighValue())
+                        .forEach(participant -> categorySixthTextArea.appendText(participant.toPrettyEnString() + "\n"));
+            }
+        });
+
         selectDirectoryButton.setOnAction(event -> {
             outputFolder = chooser.showDialog(stage);
             statisticService.clearOutputTotalWroteCount();
+            CategoryService categoryService = new CategoryService(fieldMale.getText(), fieldFemale.getText());
             List<ParticipantsGroup> participantsGroups = categoryService.processParticipants(participants);
+            FileWriter fileWriter = new FileWriter();
             participantsGroups.forEach(participantsGroup -> {
                 try {
                     String path = outputFolder.getPath() + "\\";
@@ -157,30 +177,6 @@ public class UserApp extends Application {
             totalWroteCount.setText(Integer.toString(statisticService.getOutputTotalWroteCount()));
 
         });
-
-        openMultipleButton.setOnAction(e -> {
-            List<File> list =
-                    fileChooser.showOpenMultipleDialog(stage);
-            if (list != null) {
-                statisticService.clearInputTotalReadCount();
-                participants = parser.parseDocxFiles(list);
-                if (selectDirectoryButton.isDisabled()) {
-                    selectDirectoryButton.setDisable(false);
-                }
-
-                totalReadCount.setText(Integer.toString(statisticService.getInputTotalReadCount()));
-
-                List<Participant> adults = categoryService.filterByAgeAndGender(participants, AgeCategory.ADULTS, fieldMale.getText());
-                filterByRangeAndShow(categoryFirst, categoryFirstTextArea, adults);
-                filterByRangeAndShow(categorySecond, categorySecondTextArea, adults);
-                filterByRangeAndShow(categoryThird, categoryThirdTextArea, adults);
-                filterByRangeAndShow(categoryFourth, categoryFourthTextArea, adults);
-                filterByRangeAndShow(categoryFifth, categoryFifthTextArea, adults);
-                adults.stream()
-                        .filter(participant -> participant.getRatio() >= categoryFifth.getHighValue())
-                        .forEach(participant -> categorySixthTextArea.appendText(participant.toPrettyEnString() + "\n"));
-            }
-        });
         stage.show();
     }
 
@@ -190,7 +186,7 @@ public class UserApp extends Application {
                 .forEach(participant -> categoryFirstTextArea.appendText(participant.toPrettyEnString() + "\n"));
     }
 
-    private GridPane createInputMenu(Button openMultipleButton, Button selectDirectoryButton, TextField fieldMale , TextField fieldFemale){
+    private GridPane createInputMenu(Button openMultipleButton, Button selectDirectoryButton, TextField fieldMale, TextField fieldFemale) {
 
         Label introLabel = new Label("Set categories sliders and select files, after files selected process will start. Will be showed only adults category (age 18+)");
         Label folderDescriptionLabel = new Label("Select output folder to store categorized files. Button will be enabled after files choosing");
@@ -199,6 +195,8 @@ public class UserApp extends Application {
         Label totalWrote = new Label("Participants wrote count: ");
 
         Label genderInput = new Label("Input gender definition symbols: ");
+        fieldMale.setText("\u041C");
+        fieldFemale.setText("\u0416");
         GridPane inputGridPane = new GridPane();
 
         GridPane.setConstraints(openMultipleButton, 0, 0);
@@ -229,7 +227,7 @@ public class UserApp extends Application {
     private TextArea getTextArea() {
         TextArea textArea = new TextArea();
         textArea.setEditable(false);
-        textArea.setPrefSize(200,300);
+        textArea.setPrefSize(200, 300);
         return textArea;
     }
 
@@ -244,7 +242,6 @@ public class UserApp extends Application {
         rangeSlider.setSnapToTicks(true);
         return rangeSlider;
     }
-
 
 
 }
