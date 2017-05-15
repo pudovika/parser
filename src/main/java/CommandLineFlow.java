@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.util.List;
 
-import data.Category;
 import data.Participant;
 import data.ParticipantsGroup;
 
@@ -22,7 +21,7 @@ public class CommandLineFlow {
             parser = new Parser();
             fileReader = new FileReader();
             simpleLogger = SimpleLogger.getSimpleLogger();
-            categoryService = new CategoryService();
+            categoryService = new CategoryService("M", "F");
             fileWriter = new FileWriter();
         } catch (Exception e) {
             return false;

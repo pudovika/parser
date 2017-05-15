@@ -11,6 +11,15 @@ import data.ParticipantsGroup;
 
 public class CategoryService {
 
+    private final String genderMale;
+
+    private final String genderFemale;
+
+    public CategoryService(String genderMale, String genderFemale) {
+        this.genderMale = genderMale;
+        this.genderFemale = genderFemale;
+    }
+
     /**
      * Filters participants by age
      * @param participants List of participants for filter

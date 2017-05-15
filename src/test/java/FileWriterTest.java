@@ -8,7 +8,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import data.AgeCategory;
 import data.Participant;
 import data.ParticipantsGroup;
 
@@ -26,7 +25,7 @@ public class FileWriterTest {
     public void setUp() throws Exception {
         fileReader = new FileReader();
         fileWriter = new FileWriter();
-        categoryService = new CategoryService();
+        categoryService = new CategoryService("М", "Ж");
         ClassLoader classLoader = getClass().getClassLoader();
         URL fileResource = classLoader.getResource(PARTICIPANTS_DOCX);
         if (fileResource != null){

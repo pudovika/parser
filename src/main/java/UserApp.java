@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -59,7 +60,12 @@ public class UserApp extends Application {
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("Select output directory");
 
-        GridPane inputGridPane = createInputMenu(openMultipleButton, selectDirectoryButton);
+        TextField fieldMale = new TextField();
+        fieldMale.setText("М");
+        TextField fieldFemale = new TextField();
+        fieldFemale.setText("Ж");
+
+        GridPane inputGridPane = createInputMenu(openMultipleButton, selectDirectoryButton,fieldMale,fieldFemale);
 
 
         Pane rootGroup = new VBox(12);
@@ -123,7 +129,7 @@ public class UserApp extends Application {
 
         Parser parser = new Parser();
 
-        CategoryService categoryService = new CategoryService();
+        CategoryService categoryService = new CategoryService(fieldMale.getText(), fieldFemale.getText());
 
         FileWriter fileWriter = new FileWriter();
 
@@ -164,7 +170,7 @@ public class UserApp extends Application {
 
                 totalReadCount.setText(Integer.toString(statisticService.getInputTotalReadCount()));
 
-                List<Participant> adults = categoryService.filterByAgeAndGender(participants, AgeCategory.ADULTS, ParticipantsGroup.GENDER_M);
+                List<Participant> adults = categoryService.filterByAgeAndGender(participants, AgeCategory.ADULTS, fieldMale.getText());
                 filterByRangeAndShow(categoryFirst, categoryFirstTextArea, adults);
                 filterByRangeAndShow(categorySecond, categorySecondTextArea, adults);
                 filterByRangeAndShow(categoryThird, categoryThirdTextArea, adults);
@@ -184,13 +190,15 @@ public class UserApp extends Application {
                 .forEach(participant -> categoryFirstTextArea.appendText(participant.toPrettyEnString() + "\n"));
     }
 
-    private GridPane createInputMenu(Button openMultipleButton, Button selectDirectoryButton){
+    private GridPane createInputMenu(Button openMultipleButton, Button selectDirectoryButton, TextField fieldMale , TextField fieldFemale){
 
         Label introLabel = new Label("Set categories sliders and select files, after files selected process will start. Will be showed only adults category (age 18+)");
         Label folderDescriptionLabel = new Label("Select output folder to store categorized files. Button will be enabled after files choosing");
 
         Label totalRead = new Label("Participants read count: ");
         Label totalWrote = new Label("Participants wrote count: ");
+
+        Label genderInput = new Label("Input gender definition symbols: ");
         GridPane inputGridPane = new GridPane();
 
         GridPane.setConstraints(openMultipleButton, 0, 0);
@@ -200,6 +208,9 @@ public class UserApp extends Application {
         GridPane.setConstraints(selectDirectoryButton, 0, 1);
         GridPane.setConstraints(folderDescriptionLabel, 1, 1);
         GridPane.setConstraints(totalWrote, 2, 1);
+        GridPane.setConstraints(genderInput, 1, 2);
+        GridPane.setConstraints(fieldMale, 2, 2);
+        GridPane.setConstraints(fieldFemale, 3, 2);
 
         inputGridPane.setHgap(6);
         inputGridPane.setVgap(6);
@@ -209,6 +220,9 @@ public class UserApp extends Application {
         inputGridPane.getChildren().add(selectDirectoryButton);
         inputGridPane.getChildren().add(folderDescriptionLabel);
         inputGridPane.getChildren().add(totalWrote);
+        inputGridPane.getChildren().add(genderInput);
+        inputGridPane.getChildren().add(fieldMale);
+        inputGridPane.getChildren().add(fieldFemale);
         return inputGridPane;
     }
 
